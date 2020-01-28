@@ -3,6 +3,11 @@
  */
 package twitter;
 
+import java.time.Instant;
+import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +29,11 @@ public class Extract {
      *         every tweet in the list.
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        if(tweets.size() == 0) return null;
+        List<Instant> list = new ArrayList<>();
+        for(Tweet t : tweets) list.add(t.getTimestamp());
+        list.sort(null);
+        return new Timespan(list.get(0),list.get(list.size()-1));
     }
 
     /**
@@ -43,7 +52,24 @@ public class Extract {
      *         include a username at most once.
      */
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        Set<String> set = new HashSet<>();
+        for(Tweet t : tweets) {
+            
+            if(Pattern.matches(".*\\s+@.*", t.getText())) {
+                
+                String[] str = t.getText().split("\\s+");
+                
+                for(int i=0; i<str.length;i++) {
+                    if(Pattern.matches("^@[a-zA-Z0-9_-].*", str[i])) {
+                        
+                        set.add(str[i].substring(1).toLowerCase());
+                    }
+                        
+                }
+                
+            }
+        }
+        return set;
     }
 
 }
