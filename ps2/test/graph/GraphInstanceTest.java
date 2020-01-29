@@ -6,6 +6,8 @@ package graph;
 import static org.junit.Assert.*;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -21,6 +23,9 @@ public abstract class GraphInstanceTest {
     
     // Testing strategy
     //   TODO
+    
+    private Graph<String> graphE = new ConcreteEdgesGraph();
+    
     
     /**
      * Overridden by implementation-specific test classes.
@@ -42,5 +47,46 @@ public abstract class GraphInstanceTest {
     }
     
     // TODO other tests for instance methods of Graph
-    
+    /*
+     * Testing strategy
+     * 
+     * Partition inputs:
+     * L: empty, 1
+     * add: new, duplicated
+     * 
+     */
+    @Test
+    public void testAddVertices() {
+        Graph<String> graphV = new ConcreteVerticesGraph();
+        graphV.add(new String("0"));
+        assertTrue("expected added successfully", graphV.add(new String("1")));
+        assertFalse("expected added failed", graphV.add(new String("1")));
+        Set<String> set = new HashSet<>();
+        set.add("0");
+        set.add("1");
+        assertEquals("expected added vertices set", set, graphV.vertices());
+    }
+    /*
+     * Testing Strategy
+     * 
+     * set: add, change, remove, duplicated
+     */
+    @Test
+    public void testSetVertices() {
+        
+    }
+    /*
+     * Testing strategy
+     * 
+     * remove successful, failed.
+     */
+    @Test
+    public void testRemoveVertices() {
+        Graph<String> graphV = new ConcreteVerticesGraph();
+        graphV.add(new String("0"));
+        graphV.add(new String("1"));
+        graphV.add(new String("2"));
+        graphV.add(new String("3"));
+        
+    }
 }
