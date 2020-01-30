@@ -3,9 +3,17 @@
  */
 package twitter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * SocialNetwork provides methods that operate on a social network.
@@ -41,7 +49,21 @@ public class SocialNetwork {
      *         either authors or @-mentions in the list of tweets.
      */
     public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        Map<String, Set<String>> graph = new HashMap<>();
+        Map<String, Set<Tweet>> map    = new HashMap<>();
+        for(Tweet t : tweets) {
+            Set<Tweet> set = new HashSet(Arrays.asList(t));
+            if(map.get(t.getAuthor()) != null)
+                set.addAll(map.get(t.getAuthor()));
+            map.put(t.getAuthor(), set);
+        }
+        
+        for(Tweet t : tweets) {
+            graph.put(t.getAuthor(), Extract.getMentionedUsers(new ArrayList<>(map.get(t.getAuthor()))));
+        }
+        
+        
+        return graph;
     }
 
     /**
@@ -54,7 +76,28 @@ public class SocialNetwork {
      *         descending order of follower count.
      */
     public static List<String> influencers(Map<String, Set<String>> followsGraph) {
-        throw new RuntimeException("not implemented");
+        List<String> list = new ArrayList<>();
+        Map<String,Integer> map = new HashMap<>();
+        for(String s : followsGraph.keySet()) {
+            int i = 0;
+            for(String t : followsGraph.keySet()) {
+                if(followsGraph.get(t).contains(s)) map.put(s, ++i);
+            }
+        }
+        if(map.size() == 0) return list;
+        List<Entry<String,Integer>> slist = new ArrayList<Entry<String,Integer>>(map.entrySet());
+        Collections.sort(slist,new Comparator<Map.Entry<String,Integer>>() {
+            public int compare(Entry<String,Integer> o1, Entry<String,Integer> o2) {
+                return -(o1.getValue().compareTo(o2.getValue()));
+            }
+        });
+        int i = 0;
+        for(Entry e : slist) {
+            list.add((String) e.getKey());
+            i++;
+            if(i>=10) break;
+        }
+        return list;
     }
 
 }
